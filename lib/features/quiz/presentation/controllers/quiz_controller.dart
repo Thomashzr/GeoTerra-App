@@ -129,6 +129,14 @@ class QuizNotifier extends StateNotifier<QuizState> {
     _registerIncorrectAnswer(selectedAnswer: selected);
   }
 
+  void reviveWithOneLife() {
+    if (!state.isGameOver) {
+      return;
+    }
+
+    state = state.copyWith(lives: 1, isGameOver: false, isAnswered: true);
+  }
+
   void _startTimer() {
     _timer = Timer.periodic(_tickInterval, _onTick);
   }

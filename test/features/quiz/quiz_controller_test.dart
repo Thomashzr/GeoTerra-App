@@ -123,6 +123,48 @@ void main() {
         notifier.dispose();
       });
     });
+
+    test('rewarded revive restores one life without changing the score', () {
+      fakeAsync((async) {
+        final notifier = _createNotifier();
+        _loadNextQuestion(notifier, async);
+        notifier.submitAnswer(notifier.state.currentQuestion!.target);
+
+        for (var answerNumber = 0; answerNumber < 3; answerNumber++) {
+          _loadNextQuestion(notifier, async);
+          notifier.submitAnswer(_wrongAnswer);
+        }
+
+        expect(notifier.state.score, 150);
+        expect(notifier.state.isGameOver, isTrue);
+
+        notifier.reviveWithOneLife();
+
+        expect(notifier.state.lives, 1);
+        expect(notifier.state.isGameOver, isFalse);
+        expect(notifier.state.isAnswered, isTrue);
+        expect(notifier.state.score, 150);
+
+        _loadNextQuestion(notifier, async);
+        expect(notifier.state.isAnswered, isFalse);
+        expect(notifier.state.remainingSeconds, 15);
+        notifier.dispose();
+      });
+    });
+
+    test('revive is ignored while the game is still active', () {
+      fakeAsync((async) {
+        final notifier = _createNotifier();
+        _loadNextQuestion(notifier, async);
+
+        notifier.reviveWithOneLife();
+
+        expect(notifier.state.lives, 3);
+        expect(notifier.state.isGameOver, isFalse);
+        expect(notifier.state.isAnswered, isFalse);
+        notifier.dispose();
+      });
+    });
   });
 }
 
