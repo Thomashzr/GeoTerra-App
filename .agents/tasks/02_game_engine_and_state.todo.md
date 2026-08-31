@@ -7,7 +7,7 @@
 
 ## Tareas
 
-- [ ] Crear entidades inmutables `QuizQuestion` y `QuizState` con Freezed.
-- [ ] Crear `CountryRepository` que consuma el `CountryDao`.
-- [ ] Implementar `QuizNotifier` (temporizador de 15s, 3 vidas, multiplicador de racha y puntuación).
-- [ ] Crear tests unitarios para la lógica de puntuación y transición de preguntas.
+- [x] Crear entidades inmutables `QuizQuestion` y `QuizState` con Freezed.
+- [x] Crear `CountryRepository` que consuma el `CountryDao`.
+- [x] Implementar `QuizNotifier` (temporizador de 15s, 3 vidas, multiplicador de racha y puntuación).
+- [x] Crear tests unitarios para la lógica de puntuación y transición de preguntas.

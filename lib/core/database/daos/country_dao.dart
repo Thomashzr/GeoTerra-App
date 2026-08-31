@@ -22,8 +22,15 @@ class CountryDao extends DatabaseAccessor<AppDatabase> with _$CountryDaoMixin {
 
   final Random _random;
 
-  Future<CountryQuestionOptions?> getRandomQuestionOptions() async {
-    final answerQuery = select(countries)
+  Future<CountryQuestionOptions?> getRandomQuestionOptions({
+    int? difficulty,
+  }) async {
+    var answerQuery = select(countries);
+    if (difficulty != null) {
+      answerQuery = answerQuery
+        ..where((country) => country.difficulty.equals(difficulty));
+    }
+    answerQuery = answerQuery
       ..orderBy([(country) => OrderingTerm.random()])
       ..limit(1);
     final answer = await answerQuery.getSingleOrNull();
