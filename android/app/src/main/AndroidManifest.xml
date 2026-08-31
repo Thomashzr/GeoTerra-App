@@ -1,8 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Internet permission for network connectivity (Google Mobile Ads & remote SVG fallback if any) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Advertising ID permission required for Google Mobile Ads SDK on Android 13+ (API level 33+) -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
     <application
         android:label="geoquiz_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Google Mobile Ads Application ID (configured dynamically via manifestPlaceholders in build.gradle.kts) -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

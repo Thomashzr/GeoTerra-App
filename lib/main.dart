@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'app/router.dart';
 import 'app/theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await MobileAds.instance.initialize();
+  } catch (error) {
+    debugPrint('Google Mobile Ads initialization failed: $error');
+  }
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

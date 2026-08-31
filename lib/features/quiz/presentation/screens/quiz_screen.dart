@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/services/ad_service.dart';
 import '../../../../core/services/audio_service.dart';
 import '../../data/repositories/country_repository_impl.dart';
 import '../../domain/models/quiz_state.dart';
@@ -14,6 +15,7 @@ import '../controllers/quiz_controller.dart';
 import '../widgets/flag_card.dart';
 import '../widgets/option_button.dart';
 import '../widgets/quiz_top_bar.dart';
+import '../widgets/revive_modal.dart';
 
 final appDatabaseProvider = Provider.autoDispose<AppDatabase>((ref) {
   final database = AppDatabase();
@@ -44,6 +46,13 @@ final audioServiceProvider = Provider.autoDispose<IAudioService>((ref) {
   return audioService;
 });
 
+final adServiceProvider = Provider<IAdService>((ref) {
+  final adService = AdMobService();
+  unawaited(adService.preload());
+  ref.onDispose(() => unawaited(adService.dispose()));
+  return adService;
+});
+
 class QuizScreen extends ConsumerWidget {
   const QuizScreen({super.key});
 
@@ -52,6 +61,7 @@ class QuizScreen extends ConsumerWidget {
     final config = ref.watch(quizControllerConfigProvider);
     final controllerProvider = quizControllerProvider(config);
     final audioService = ref.watch(audioServiceProvider);
+    final adService = ref.watch(adServiceProvider);
 
     ref.listen<QuizState>(controllerProvider, (previous, next) {
       final justAnswered = next.isAnswered && previous?.isAnswered != true;
@@ -79,9 +89,14 @@ class QuizScreen extends ConsumerWidget {
       if (next.isGameOver && previous?.isGameOver != true) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (context.mounted) {
-            context.go(
-              resultRoutePath,
-              extra: QuizResultArgs(score: next.score),
+            unawaited(
+              _showGameOverFlow(
+                context: context,
+                ref: ref,
+                config: config,
+                gameOverState: next,
+                adService: adService,
+              ),
             );
           }
         });
@@ -174,6 +189,46 @@ class QuizScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _showGameOverFlow({
+    required BuildContext context,
+    required WidgetRef ref,
+    required QuizControllerConfig config,
+    required QuizState gameOverState,
+    required IAdService adService,
+  }) async {
+    final wasRevived = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => ReviveModal(
+        adService: adService,
+        onRevived: () => Navigator.of(dialogContext).pop(true),
+        onFinished: () => Navigator.of(dialogContext).pop(false),
+      ),
+    );
+
+    if (!context.mounted) {
+      return;
+    }
+
+    if (wasRevived == true) {
+      ref.read(quizControllerProvider(config).notifier).reviveWithOneLife();
+      return;
+    }
+
+    await adService.showInterstitialIfEligible();
+    if (context.mounted) {
+      _openResults(context, gameOverState.score);
+    }
+  }
+
+  void _openResults(BuildContext context, int score) {
+    if (!context.mounted) {
+      return;
+    }
+
+    context.go(resultRoutePath, extra: QuizResultArgs(score: score));
   }
 }
 
