@@ -8,8 +8,8 @@
 
 ## Tareas
 
-- [ ] Configurar temas claro/oscuro y `go_router` en `lib/app/`.
-- [ ] Crear el widget `FlagCard` con renderizado SVG y animación de carga.
-- [ ] Crear `OptionButton` con feedback de color instantáneo (verde acierto, rojo error) usando `flutter_animate`.
-- [ ] Montar `QuizScreen` integrando barra de tiempo superior, contador de vidas y cuadrícula de opciones.
-- [ ] Conectar efectos de sonido con `audioplayers` al acertar/fallar.
+- [x] Configurar temas claro/oscuro y `go_router` en `lib/app/`.
+- [x] Crear el widget `FlagCard` con renderizado SVG y animación de carga.
+- [x] Crear `OptionButton` con feedback de color instantáneo (verde acierto, rojo error) usando `flutter_animate`.
+- [x] Montar `QuizScreen` integrando barra de tiempo superior, contador de vidas y cuadrícula de opciones.
+- [x] Conectar efectos de sonido con `audioplayers` al acertar/fallar.
