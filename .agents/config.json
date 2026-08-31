@@ -1,0 +1,19 @@
+{
+  "bridge": "hcom",
+  "agents": {
+    "master": {
+      "name": "codex",
+      "role": "Flutter Lead & State Orchestrator"
+    },
+    "subagent": {
+      "name": "agy",
+      "provider": "google",
+      "role": "Data Processing, SQLite Pipelines & Asset Optimization"
+    }
+  },
+  "shared_paths": {
+    "assets_dest": "assets/data/",
+    "flags_dest": "assets/flags/",
+    "database_dest": "lib/core/database/"
+  }
+}
