@@ -26,6 +26,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text('GeoQuiz'), findsOneWidget);
+    expect(find.text('Jugar'), findsOneWidget);
+    await tester.tap(find.text('Jugar'));
+    await tester.pumpAndSettle();
+
     expect(find.text('¿De qué país es esta bandera?'), findsOneWidget);
     expect(find.text('Argentina'), findsOneWidget);
     expect(find.text('Brasil'), findsOneWidget);

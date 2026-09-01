@@ -3,9 +3,12 @@ import 'package:go_router/go_router.dart';
 
 import '../features/quiz/presentation/screens/quiz_screen.dart';
 import '../features/quiz/presentation/screens/result_screen.dart';
+import '../features/home/presentation/screens/home_screen.dart';
 
+const homeRoutePath = '/';
 const quizRoutePath = '/quiz';
 const resultRoutePath = '/result';
+const settingsRoutePath = '/settings';
 
 @immutable
 class QuizResultArgs {
@@ -16,8 +19,12 @@ class QuizResultArgs {
 }
 
 final appRouter = GoRouter(
-  initialLocation: quizRoutePath,
+  initialLocation: homeRoutePath,
   routes: [
+    GoRoute(
+      path: homeRoutePath,
+      builder: (context, state) => const HomeScreen(),
+    ),
     GoRoute(
       path: quizRoutePath,
       builder: (context, state) => const QuizScreen(),
@@ -30,6 +37,10 @@ final appRouter = GoRouter(
         final args = state.extra! as QuizResultArgs;
         return ResultScreen(score: args.score, isRecord: args.isRecord);
       },
+    ),
+    GoRoute(
+      path: settingsRoutePath,
+      builder: (context, state) => const SettingsPlaceholderScreen(),
     ),
   ],
 );

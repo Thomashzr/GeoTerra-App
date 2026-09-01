@@ -66,7 +66,7 @@ class ResultScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   OutlinedButton.icon(
-                    onPressed: () => context.go(quizRoutePath),
+                    onPressed: () => context.go(homeRoutePath),
                     icon: const Icon(Icons.arrow_back_rounded),
                     label: const Text('Volver'),
                   ),
