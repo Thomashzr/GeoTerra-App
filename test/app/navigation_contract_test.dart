@@ -7,10 +7,12 @@ import 'package:geoquiz_app/app/providers.dart';
 import 'package:geoquiz_app/app/router.dart';
 import 'package:geoquiz_app/core/services/ad_service.dart';
 import 'package:geoquiz_app/core/services/audio_service.dart';
-import 'package:geoquiz_app/features/home/presentation/screens/home_screen.dart';
 import 'package:geoquiz_app/features/quiz/domain/models/country.dart';
 import 'package:geoquiz_app/features/quiz/domain/models/quiz_question.dart';
 import 'package:geoquiz_app/features/quiz/domain/repositories/country_repository.dart';
+import 'package:geoquiz_app/features/settings/domain/models/app_settings.dart';
+import 'package:geoquiz_app/features/settings/domain/repositories/settings_repository.dart';
+import 'package:geoquiz_app/features/settings/presentation/screens/settings_page.dart';
 
 void main() {
   testWidgets('home play action navigates to quiz', (tester) async {
@@ -19,7 +21,7 @@ void main() {
     await tester.pumpWidget(_App(router: router));
 
     expect(find.text('GeoQuiz'), findsOneWidget);
-    await tester.tap(find.text('Jugar'));
+    await tester.tap(find.text('Comenzar expedición'));
     await tester.pumpAndSettle();
 
     expect(router.routeInformationProvider.value.uri.path, quizRoutePath);
@@ -30,11 +32,11 @@ void main() {
     addTearDown(router.dispose);
     await tester.pumpWidget(_App(router: router));
 
-    await tester.tap(find.text('Ajustes'));
+    await tester.tap(find.text('Ajustes de viaje'));
     await tester.pumpAndSettle();
 
     expect(router.routeInformationProvider.value.uri.path, settingsRoutePath);
-    expect(find.byType(SettingsPlaceholderScreen), findsOneWidget);
+    expect(find.byType(SettingsPage), findsOneWidget);
   });
 }
 
@@ -49,15 +51,15 @@ class _App extends StatelessWidget {
   final GoRouter router;
 
   @override
-  Widget build(BuildContext context) =>
-      ProviderScope(
-        overrides: [
-          countryRepositoryProvider.overrideWithValue(_FakeRepository()),
-          audioServiceProvider.overrideWithValue(_FakeAudioService()),
-          adServiceProvider.overrideWithValue(_FakeAdService()),
-        ],
-        child: MaterialApp.router(routerConfig: router),
-      );
+  Widget build(BuildContext context) => ProviderScope(
+    overrides: [
+      countryRepositoryProvider.overrideWithValue(_FakeRepository()),
+      audioServiceProvider.overrideWithValue(_FakeAudioService()),
+      adServiceProvider.overrideWithValue(_FakeAdService()),
+      settingsRepositoryProvider.overrideWithValue(_FakeSettingsRepository()),
+    ],
+    child: MaterialApp.router(routerConfig: router),
+  );
 }
 
 class _FakeRepository implements CountryRepository {
@@ -92,6 +94,16 @@ class _FakeAdService implements IAdService {
   Future<bool> showInterstitialIfEligible() async => false;
   @override
   Future<bool> showRewardedAd() async => false;
+}
+
+class _FakeSettingsRepository implements SettingsRepository {
+  AppSettings value = AppSettings.defaults;
+
+  @override
+  Future<AppSettings> load() async => value;
+
+  @override
+  Future<void> save(AppSettings settings) async => value = settings;
 }
 
 const _country = Country(

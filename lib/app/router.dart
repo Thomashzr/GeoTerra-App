@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../features/quiz/presentation/screens/quiz_screen.dart';
 import '../features/quiz/presentation/screens/result_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
+import '../features/settings/presentation/screens/settings_page.dart';
 
 const homeRoutePath = '/';
 const quizRoutePath = '/quiz';
@@ -43,7 +44,8 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: settingsRoutePath,
-      builder: (context, state) => const SettingsPlaceholderScreen(),
+      builder: (context, state) =>
+          SettingsPage(onBack: () => context.go(homeRoutePath)),
     ),
   ],
 );

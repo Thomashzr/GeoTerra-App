@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/atlas_scaffold.dart';
+
 /// Entry point for the game. It deliberately owns only presentation concerns;
 /// navigation can be overridden by the app router or by tests.
 class HomeScreen extends StatelessWidget {
@@ -8,57 +10,31 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback? onPlay;
   final VoidCallback? onSettings;
 
-  void _showSettings(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Ajustes',
-                style: Theme.of(context).textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 8),
-              const Text('Los ajustes estarán disponibles próximamente.'),
-              const SizedBox(height: 20),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cerrar'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final play = onPlay ?? () {};
-    final settings = onSettings ?? () => _showSettings(context);
+    final settings = onSettings ?? () {};
 
-    return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final horizontalPadding = constraints.maxWidth >= 600 ? 48.0 : 24.0;
-            return SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(
-                horizontalPadding,
-                32,
-                horizontalPadding,
-                24,
-              ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: IntrinsicHeight(
+    return AtlasScaffold(
+      coordinate: '34°36′S · 58°22′O',
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final horizontalPadding = constraints.maxWidth >= 600 ? 48.0 : 24.0;
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(
+                  horizontalPadding,
+                  28,
+                  horizontalPadding,
+                  40,
+                ),
+                child: SizedBox(
+                  height: (constraints.maxHeight - 68)
+                      .clamp(520.0, 760.0)
+                      .toDouble(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -66,40 +42,68 @@ class HomeScreen extends StatelessWidget {
                       Semantics(
                         label: 'Globo terráqueo de GeoQuiz',
                         image: true,
-                        child: Icon(
-                          Icons.public_rounded,
-                          size: 104,
-                          color: colors.primary,
+                        child: Container(
+                          width: 118,
+                          height: 118,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: colors.primaryContainer.withValues(
+                              alpha: .72,
+                            ),
+                            border: Border.all(
+                              color: colors.primary,
+                              width: 1.4,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.public_rounded,
+                            size: 74,
+                            color: colors.primary,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
                       Text(
                         'GeoQuiz',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.displaySmall
                             ?.copyWith(
-                              color: colors.primary,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: -1,
+                              color: colors.onSurface,
+                              fontFamily: 'serif',
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -.8,
                             ),
                       ),
                       const SizedBox(height: 8),
                       Text(
+                        'ATLAS EN JUEGO',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: colors.tertiary,
+                          fontFamily: 'monospace',
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.8,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
                         'Pon a prueba tus conocimientos del mundo',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: colors.onSurfaceVariant),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 42),
                       FilledButton.icon(
                         onPressed: play,
-                        icon: const Icon(Icons.play_arrow_rounded),
-                        label: const Text('Jugar'),
+                        icon: const Icon(Icons.explore_rounded),
+                        label: const Text('Comenzar expedición'),
                       ),
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
                         onPressed: settings,
-                        icon: const Icon(Icons.settings_rounded),
-                        label: const Text('Ajustes'),
+                        icon: const Icon(Icons.tune_rounded),
+                        label: const Text('Ajustes de viaje'),
                       ),
                       const SizedBox(height: 12),
                       Tooltip(
@@ -112,55 +116,23 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const SizedBox(height: 32),
                       Text(
-                        'Aprende. Juega. Descubre.',
+                        'APRENDE · JUEGA · DESCUBRE',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium
-                            ?.copyWith(color: colors.onSurfaceVariant),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: colors.onSurfaceVariant,
+                              fontFamily: 'monospace',
+                              letterSpacing: 1.15,
+                            ),
                       ),
                     ],
                   ),
                 ),
               ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-/// Temporary destination kept behind a route so settings can become a full
-/// screen without changing the public navigation contract.
-class SettingsPlaceholderScreen extends StatelessWidget {
-  const SettingsPlaceholderScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Ajustes')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.settings_rounded, size: 64),
-              const SizedBox(height: 16),
-              Text(
-                'Los ajustes estarán disponibles próximamente.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Volver'),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

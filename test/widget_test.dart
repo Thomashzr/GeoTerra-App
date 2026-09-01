@@ -6,6 +6,8 @@ import 'package:geoquiz_app/features/quiz/domain/models/country.dart';
 import 'package:geoquiz_app/core/services/audio_service.dart';
 import 'package:geoquiz_app/features/quiz/domain/models/quiz_question.dart';
 import 'package:geoquiz_app/features/quiz/domain/repositories/country_repository.dart';
+import 'package:geoquiz_app/features/settings/domain/models/app_settings.dart';
+import 'package:geoquiz_app/features/settings/domain/repositories/settings_repository.dart';
 import 'package:geoquiz_app/main.dart';
 
 void main() {
@@ -20,6 +22,9 @@ void main() {
         overrides: [
           countryRepositoryProvider.overrideWithValue(_FakeCountryRepository()),
           audioServiceProvider.overrideWithValue(_FakeAudioService()),
+          settingsRepositoryProvider.overrideWithValue(
+            _FakeSettingsRepository(),
+          ),
         ],
         child: const MyApp(),
       ),
@@ -27,8 +32,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('GeoQuiz'), findsOneWidget);
-    expect(find.text('Jugar'), findsOneWidget);
-    await tester.tap(find.text('Jugar'));
+    expect(find.text('Comenzar expedición'), findsOneWidget);
+    await tester.tap(find.text('Comenzar expedición'));
     await tester.pumpAndSettle();
 
     expect(find.text('¿De qué país es esta bandera?'), findsOneWidget);
@@ -71,6 +76,16 @@ class _FakeAudioService implements IAudioService {
 
   @override
   Future<void> preload() async {}
+}
+
+class _FakeSettingsRepository implements SettingsRepository {
+  AppSettings value = AppSettings.defaults;
+
+  @override
+  Future<AppSettings> load() async => value;
+
+  @override
+  Future<void> save(AppSettings settings) async => value = settings;
 }
 
 const _argentina = Country(

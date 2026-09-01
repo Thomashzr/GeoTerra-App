@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router.dart';
 import '../../../../app/providers.dart';
 import '../../../../core/services/ad_service.dart';
+import '../../../../core/widgets/atlas_scaffold.dart';
 import '../../domain/models/quiz_state.dart';
 import '../controllers/quiz_controller.dart';
 import '../widgets/flag_card.dart';
@@ -68,57 +69,62 @@ class QuizScreen extends ConsumerWidget {
     final question = state.currentQuestion;
 
     if (question == null) {
-      return const Scaffold(
-        body: SafeArea(child: Center(child: CircularProgressIndicator())),
+      return const AtlasScaffold(
+        child: Center(child: CircularProgressIndicator()),
       );
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 760),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-              children: [
-                QuizTopBar(
-                  lives: state.lives,
-                  score: state.score,
-                  remainingSeconds: state.remainingSeconds,
-                  totalSeconds: question.timeLimitSeconds,
+    return AtlasScaffold(
+      coordinate: 'PARTIDA · ${state.currentQuestionIndex + 1}',
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 48),
+            children: [
+              QuizTopBar(
+                lives: state.lives,
+                score: state.score,
+                remainingSeconds: state.remainingSeconds,
+                totalSeconds: question.timeLimitSeconds,
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'PUNTO DE CONTROL ${state.currentQuestionIndex + 1}',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  fontFamily: 'monospace',
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.25,
                 ),
-                const SizedBox(height: 28),
-                Text(
-                  'Pregunta ${state.currentQuestionIndex + 1}',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w800,
-                  ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '¿De qué país es esta bandera?',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontFamily: 'serif',
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  '¿De qué país es esta bandera?',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 24),
-                FlagCard(assetPath: question.target.flagAssetPath),
-                const SizedBox(height: 28),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final columns = constraints.maxWidth >= 560 ? 2 : 1;
-                    return GridView.count(
-                      crossAxisCount: columns,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: columns == 1 ? 5 : 3.4,
-                      children: [
-                        for (final option in question.options)
-                          OptionButton(
+              ),
+              const SizedBox(height: 24),
+              FlagCard(assetPath: question.target.flagAssetPath),
+              const SizedBox(height: 28),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final columns = constraints.maxWidth >= 560 ? 2 : 1;
+                  final optionWidth = columns == 1
+                      ? constraints.maxWidth
+                      : (constraints.maxWidth - 12) / 2;
+                  return Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      for (final option in question.options)
+                        SizedBox(
+                          width: optionWidth,
+                          child: OptionButton(
                             label: option.nameEs,
                             visualState: _optionVisualState(
                               state: state,
@@ -130,22 +136,22 @@ class QuizScreen extends ConsumerWidget {
                                       .read(controllerProvider.notifier)
                                       .submitAnswer(option),
                           ),
-                      ],
-                    );
-                  },
-                ),
-                if (state.isAnswered && !state.isGameOver) ...[
-                  const SizedBox(height: 20),
-                  FilledButton.icon(
-                    onPressed: () => unawaited(
-                      ref.read(controllerProvider.notifier).nextQuestion(),
-                    ),
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('Siguiente pregunta'),
+                        ),
+                    ],
+                  );
+                },
+              ),
+              if (state.isAnswered && !state.isGameOver) ...[
+                const SizedBox(height: 20),
+                FilledButton.icon(
+                  onPressed: () => unawaited(
+                    ref.read(controllerProvider.notifier).nextQuestion(),
                   ),
-                ],
+                  icon: const Icon(Icons.arrow_forward_rounded),
+                  label: const Text('Siguiente pregunta'),
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ),

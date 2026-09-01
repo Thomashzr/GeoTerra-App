@@ -25,9 +25,12 @@ abstract interface class IAudioService {
 ///
 /// Uses [PlayerMode.lowLatency] and reuses players to minimize memory and latency.
 class AudioService implements IAudioService {
-  AudioService({AudioPlayer? player}) : _player = player ?? AudioPlayer();
+  AudioService({AudioPlayer? player, double initialVolume = 1})
+    : _player = player ?? AudioPlayer(),
+      _volume = initialVolume.clamp(0.0, 1.0).toDouble();
 
   final AudioPlayer _player;
+  final double _volume;
   bool _isDisposed = false;
 
   static const String _successAsset = 'audio/success.mp3';
@@ -41,6 +44,7 @@ class AudioService implements IAudioService {
     try {
       await _player.setPlayerMode(PlayerMode.lowLatency);
       await _player.setReleaseMode(ReleaseMode.stop);
+      await _player.setVolume(_volume);
       // Pre-warm the audio cache for instant playback
       await AudioCache.instance.loadAll([
         _successAsset,
@@ -66,9 +70,10 @@ class AudioService implements IAudioService {
   Future<void> playGameOver() => _playSound(_gameOverAsset);
 
   Future<void> _playSound(String assetPath) async {
-    if (_isDisposed) return;
+    if (_isDisposed || _volume == 0) return;
     try {
       await _player.stop();
+      await _player.setVolume(_volume);
       await _player.play(AssetSource(assetPath));
     } catch (_) {
       // Avoid crashing gameplay if platform audio output fails

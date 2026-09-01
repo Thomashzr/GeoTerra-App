@@ -19,8 +19,8 @@ void main() {
     );
 
     expect(find.text('GeoQuiz'), findsOneWidget);
-    expect(find.text('Jugar'), findsOneWidget);
-    expect(find.text('Ajustes'), findsOneWidget);
+    expect(find.text('Comenzar expedición'), findsOneWidget);
+    expect(find.text('Ajustes de viaje'), findsOneWidget);
     expect(find.text('Reto diario'), findsOneWidget);
     expect(
       tester
@@ -31,29 +31,9 @@ void main() {
       isNull,
     );
 
-    await tester.tap(find.text('Jugar'));
-    await tester.tap(find.text('Ajustes'));
+    await tester.tap(find.text('Comenzar expedición'));
+    await tester.tap(find.text('Ajustes de viaje'));
     expect(played, isTrue);
     expect(settingsOpened, isTrue);
-  });
-
-  testWidgets('default settings action opens a functional placeholder', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
-    await tester.tap(find.text('Ajustes'));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text('Los ajustes estarán disponibles próximamente.'),
-      findsOneWidget,
-    );
-    expect(find.text('Cerrar'), findsOneWidget);
-    await tester.tap(find.text('Cerrar'));
-    await tester.pumpAndSettle();
-    expect(
-      find.text('Los ajustes estarán disponibles próximamente.'),
-      findsNothing,
-    );
   });
 }

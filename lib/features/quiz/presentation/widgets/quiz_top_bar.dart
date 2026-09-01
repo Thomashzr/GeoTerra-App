@@ -9,7 +9,6 @@ class QuizTopBar extends StatelessWidget {
     required this.totalSeconds,
     super.key,
   });
-
   final int lives;
   final int score;
   final int remainingSeconds;
@@ -22,115 +21,147 @@ class QuizTopBar extends StatelessWidget {
     final safeRemaining = remainingSeconds.clamp(0, safeTotal);
     final progress = safeRemaining / safeTotal;
     final progressColor = _progressColor(progress);
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
+    final colors = Theme.of(context).colorScheme;
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.surfaceContainer.withValues(alpha: .88),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+        child: Column(
           children: [
-            Expanded(
-              child: Semantics(
-                label: '$safeLives vidas restantes',
-                liveRegion: true,
-                child: ExcludeSemantics(
-                  child: Wrap(
-                    spacing: 3,
-                    children: [
-                      for (var index = 0; index < safeLives; index++)
-                        Icon(
-                              Icons.favorite_rounded,
-                              color: Colors.red.shade600,
-                              size: 27,
-                            )
-                            .animate()
-                            .fadeIn(delay: (index * 60).ms)
-                            .scale(
-                              begin: const Offset(0.65, 0.65),
-                              duration: 450.ms,
-                              delay: (index * 60).ms,
-                              curve: Curves.elasticOut,
-                            ),
-                    ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final largeText =
+                    MediaQuery.textScalerOf(context).scale(14) > 18;
+                final hearts = Semantics(
+                  label: '$safeLives vidas restantes',
+                  liveRegion: true,
+                  child: ExcludeSemantics(
+                    child: Wrap(
+                      spacing: 3,
+                      children: [
+                        for (var i = 0; i < safeLives; i++)
+                          _heart(colors, i, reduceMotion),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Semantics(
-              label: 'Puntuación: $score puntos',
-              liveRegion: true,
-              child: ExcludeSemantics(
-                child: Row(
+                );
+                final metrics = Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.stars_rounded,
-                      color: Colors.amber.shade700,
-                      size: 25,
+                    _Metric(
+                      icon: Icons.stars_rounded,
+                      value: '$score',
+                      label: 'Puntuación: $score puntos',
+                      color: colors.tertiary,
                     ),
-                    const SizedBox(width: 5),
-                    Text(
-                      '$score',
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                    const SizedBox(width: 14),
+                    _Metric(
+                      icon: Icons.timer_outlined,
+                      value: '${safeRemaining}s',
+                      label: '$safeRemaining segundos restantes',
+                      color: progressColor,
                     ),
                   ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Semantics(
-              label: '$safeRemaining segundos restantes',
-              liveRegion: true,
-              child: ExcludeSemantics(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                );
+
+                if (largeText || constraints.maxWidth < 320) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      hearts,
+                      const SizedBox(height: 8),
+                      Align(alignment: Alignment.centerRight, child: metrics),
+                    ],
+                  );
+                }
+
+                return Row(
                   children: [
-                    const Icon(Icons.timer_outlined, size: 23),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${safeRemaining}s',
-                      style: textTheme.titleMedium?.copyWith(
-                        color: progressColor,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
+                    Expanded(child: hearts),
+                    metrics,
                   ],
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            Semantics(
+              label: 'Tiempo restante',
+              value: '${(progress * 100).round()} por ciento',
+              child: ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(99),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 8,
+                    color: progressColor,
+                    backgroundColor: colors.surfaceContainerHighest,
+                  ),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        Semantics(
-          label: 'Tiempo restante',
-          value: '${(progress * 100).round()} por ciento',
-          child: ExcludeSemantics(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(999)),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 10,
-                color: progressColor,
-                backgroundColor: Theme.of(context)
-                    .colorScheme
-                    .surfaceContainerHighest,
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  Color _progressColor(double progress) {
-    if (progress > 0.5) {
-      return const Color(0xFF2E7D32);
-    }
-    if (progress > 0.25) {
-      return const Color(0xFFF9A825);
-    }
-    return const Color(0xFFC62828);
+  Widget _heart(ColorScheme colors, int index, bool reduceMotion) {
+    final icon = Icon(Icons.favorite_rounded, color: colors.error, size: 25);
+    if (reduceMotion) return icon;
+    return icon
+        .animate()
+        .fadeIn(delay: (index * 45).ms)
+        .scale(
+          begin: const Offset(.75, .75),
+          duration: 260.ms,
+          delay: (index * 45).ms,
+          curve: Curves.easeOutBack,
+        );
   }
+
+  Color _progressColor(double progress) {
+    if (progress > .5) return const Color(0xFF217348);
+    if (progress > .25) return const Color(0xFFD58B00);
+    return const Color(0xFFB83232);
+  }
+}
+
+class _Metric extends StatelessWidget {
+  const _Metric({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.color,
+  });
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color color;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    liveRegion: true,
+    child: ExcludeSemantics(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 21),
+          const SizedBox(width: 4),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontFamily: 'monospace',
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
