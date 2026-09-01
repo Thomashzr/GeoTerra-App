@@ -1,4 +1,6 @@
+import '../../../../core/database/app_database.dart' as db;
 import '../../../../core/database/daos/country_dao.dart';
+import '../../domain/models/country.dart';
 import '../../domain/models/quiz_question.dart';
 import '../../domain/repositories/country_repository.dart';
 
@@ -20,9 +22,21 @@ class CountryRepositoryImpl implements CountryRepository {
     }
 
     return QuizQuestion(
-      target: questionOptions.answer,
-      options: questionOptions.options,
+      target: _toDomain(questionOptions.answer),
+      options: questionOptions.options.map(_toDomain).toList(),
       timeLimitSeconds: 15,
+    );
+  }
+
+  static Country _toDomain(db.Country row) {
+    return Country(
+      id: row.id,
+      isoCode: row.isoCode,
+      nameEs: row.nameEs,
+      capitalEs: row.capitalEs,
+      continent: row.continent,
+      difficulty: row.difficulty,
+      flagAssetPath: row.flagAssetPath,
     );
   }
 }

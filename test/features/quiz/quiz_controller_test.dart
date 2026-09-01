@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:geoquiz_app/core/database/app_database.dart';
+import 'package:geoquiz_app/features/quiz/domain/models/country.dart';
 import 'package:geoquiz_app/features/quiz/domain/models/quiz_question.dart';
 import 'package:geoquiz_app/features/quiz/domain/repositories/country_repository.dart';
 import 'package:geoquiz_app/features/quiz/presentation/controllers/quiz_controller.dart';

@@ -27,14 +27,14 @@ $QuizQuestionCopyWith<QuizQuestion> get copyWith => _$QuizQuestionCopyWithImpl<Q
 @override
 bool operator ==(Object other) {
   final _this = this as QuizQuestion;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizQuestion&&const DeepCollectionEquality().equals(other.target, _this.target)&&const DeepCollectionEquality().equals(other.options, _this.options)&&(identical(other.timeLimitSeconds, _this.timeLimitSeconds) || other.timeLimitSeconds == _this.timeLimitSeconds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizQuestion&&(identical(other.target, _this.target) || other.target == _this.target)&&const DeepCollectionEquality().equals(other.options, _this.options)&&(identical(other.timeLimitSeconds, _this.timeLimitSeconds) || other.timeLimitSeconds == _this.timeLimitSeconds));
 }
 
 
 @override
 int get hashCode {
   final _this = this as QuizQuestion;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.target),const DeepCollectionEquality().hash(_this.options),_this.timeLimitSeconds);
+  return Object.hash(runtimeType,_this.target,const DeepCollectionEquality().hash(_this.options),_this.timeLimitSeconds);
 }
 
 @override
@@ -55,7 +55,7 @@ $Res call({
 });
 
 
-
+$CountryCopyWith<$Res> get target;
 
 }
 /// @nodoc
@@ -68,15 +68,24 @@ class _$QuizQuestionCopyWithImpl<$Res>
 
 /// Create a copy of QuizQuestion
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? target = freezed,Object? options = null,Object? timeLimitSeconds = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? target = null,Object? options = null,Object? timeLimitSeconds = null,}) {
   return _then(QuizQuestion(
-target: freezed == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
+target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
 as Country,options: null == options ? _self.options : options // ignore: cast_nullable_to_non_nullable
 as List<Country>,timeLimitSeconds: null == timeLimitSeconds ? _self.timeLimitSeconds : timeLimitSeconds // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
+/// Create a copy of QuizQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountryCopyWith<$Res> get target {
 
+  return $CountryCopyWith<$Res>(_self.target, (value) {
+    return _then(_self.copyWith(target: value));
+  });
+}
 }
 
 
@@ -237,13 +246,13 @@ _$QuizQuestionCopyWith<_QuizQuestion> get copyWith => __$QuizQuestionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizQuestion&&const DeepCollectionEquality().equals(other.target, target)&&const DeepCollectionEquality().equals(other.options, _options)&&(identical(other.timeLimitSeconds, timeLimitSeconds) || other.timeLimitSeconds == timeLimitSeconds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizQuestion&&(identical(other.target, target) || other.target == target)&&const DeepCollectionEquality().equals(other.options, _options)&&(identical(other.timeLimitSeconds, timeLimitSeconds) || other.timeLimitSeconds == timeLimitSeconds));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(target),const DeepCollectionEquality().hash(_options),timeLimitSeconds);
+    return Object.hash(runtimeType,target,const DeepCollectionEquality().hash(_options),timeLimitSeconds);
 }
 
 @override
@@ -263,7 +272,7 @@ $Res call({
 });
 
 
-
+@override $CountryCopyWith<$Res> get target;
 
 }
 /// @nodoc
@@ -276,16 +285,25 @@ class __$QuizQuestionCopyWithImpl<$Res>
 
 /// Create a copy of QuizQuestion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? target = freezed,Object? options = null,Object? timeLimitSeconds = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? target = null,Object? options = null,Object? timeLimitSeconds = null,}) {
   return _then(_QuizQuestion(
-target: freezed == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
+target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
 as Country,options: null == options ? _self._options : options // ignore: cast_nullable_to_non_nullable
 as List<Country>,timeLimitSeconds: null == timeLimitSeconds ? _self.timeLimitSeconds : timeLimitSeconds // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
 
+/// Create a copy of QuizQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountryCopyWith<$Res> get target {
 
+  return $CountryCopyWith<$Res>(_self.target, (value) {
+    return _then(_self.copyWith(target: value));
+  });
+}
 }
 
 // dart format on

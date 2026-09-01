@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/database/app_database.dart';
+import 'country.dart';
 
 part 'quiz_question.freezed.dart';
 

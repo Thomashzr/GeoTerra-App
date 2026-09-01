@@ -27,14 +27,14 @@ $QuizStateCopyWith<QuizState> get copyWith => _$QuizStateCopyWithImpl<QuizState>
 @override
 bool operator ==(Object other) {
   final _this = this as QuizState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizState&&(identical(other.currentQuestion, _this.currentQuestion) || other.currentQuestion == _this.currentQuestion)&&(identical(other.currentQuestionIndex, _this.currentQuestionIndex) || other.currentQuestionIndex == _this.currentQuestionIndex)&&(identical(other.lives, _this.lives) || other.lives == _this.lives)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver)&&(identical(other.remainingSeconds, _this.remainingSeconds) || other.remainingSeconds == _this.remainingSeconds)&&(identical(other.isAnswered, _this.isAnswered) || other.isAnswered == _this.isAnswered)&&const DeepCollectionEquality().equals(other.selectedAnswer, _this.selectedAnswer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizState&&(identical(other.currentQuestion, _this.currentQuestion) || other.currentQuestion == _this.currentQuestion)&&(identical(other.currentQuestionIndex, _this.currentQuestionIndex) || other.currentQuestionIndex == _this.currentQuestionIndex)&&(identical(other.lives, _this.lives) || other.lives == _this.lives)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver)&&(identical(other.remainingSeconds, _this.remainingSeconds) || other.remainingSeconds == _this.remainingSeconds)&&(identical(other.isAnswered, _this.isAnswered) || other.isAnswered == _this.isAnswered)&&(identical(other.selectedAnswer, _this.selectedAnswer) || other.selectedAnswer == _this.selectedAnswer));
 }
 
 
 @override
 int get hashCode {
   final _this = this as QuizState;
-  return Object.hash(runtimeType,_this.currentQuestion,_this.currentQuestionIndex,_this.lives,_this.score,_this.streak,_this.isGameOver,_this.remainingSeconds,_this.isAnswered,const DeepCollectionEquality().hash(_this.selectedAnswer));
+  return Object.hash(runtimeType,_this.currentQuestion,_this.currentQuestionIndex,_this.lives,_this.score,_this.streak,_this.isGameOver,_this.remainingSeconds,_this.isAnswered,_this.selectedAnswer);
 }
 
 @override
@@ -55,7 +55,7 @@ $Res call({
 });
 
 
-$QuizQuestionCopyWith<$Res>? get currentQuestion;
+$QuizQuestionCopyWith<$Res>? get currentQuestion;$CountryCopyWith<$Res>? get selectedAnswer;
 
 }
 /// @nodoc
@@ -93,6 +93,18 @@ $QuizQuestionCopyWith<$Res>? get currentQuestion {
 
   return $QuizQuestionCopyWith<$Res>(_self.currentQuestion!, (value) {
     return _then(_self.copyWith(currentQuestion: value));
+  });
+}/// Create a copy of QuizState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountryCopyWith<$Res>? get selectedAnswer {
+    if (_self.selectedAnswer == null) {
+    return null;
+  }
+
+  return $CountryCopyWith<$Res>(_self.selectedAnswer!, (value) {
+    return _then(_self.copyWith(selectedAnswer: value));
   });
 }
 }
@@ -255,13 +267,13 @@ _$QuizStateCopyWith<_QuizState> get copyWith => __$QuizStateCopyWithImpl<_QuizSt
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizState&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.lives, lives) || other.lives == lives)&&(identical(other.score, score) || other.score == score)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver)&&(identical(other.remainingSeconds, remainingSeconds) || other.remainingSeconds == remainingSeconds)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered)&&const DeepCollectionEquality().equals(other.selectedAnswer, selectedAnswer));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizState&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.lives, lives) || other.lives == lives)&&(identical(other.score, score) || other.score == score)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver)&&(identical(other.remainingSeconds, remainingSeconds) || other.remainingSeconds == remainingSeconds)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered)&&(identical(other.selectedAnswer, selectedAnswer) || other.selectedAnswer == selectedAnswer));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,currentQuestion,currentQuestionIndex,lives,score,streak,isGameOver,remainingSeconds,isAnswered,const DeepCollectionEquality().hash(selectedAnswer));
+    return Object.hash(runtimeType,currentQuestion,currentQuestionIndex,lives,score,streak,isGameOver,remainingSeconds,isAnswered,selectedAnswer);
 }
 
 @override
@@ -281,7 +293,7 @@ $Res call({
 });
 
 
-@override $QuizQuestionCopyWith<$Res>? get currentQuestion;
+@override $QuizQuestionCopyWith<$Res>? get currentQuestion;@override $CountryCopyWith<$Res>? get selectedAnswer;
 
 }
 /// @nodoc
@@ -320,6 +332,18 @@ $QuizQuestionCopyWith<$Res>? get currentQuestion {
 
   return $QuizQuestionCopyWith<$Res>(_self.currentQuestion!, (value) {
     return _then(_self.copyWith(currentQuestion: value));
+  });
+}/// Create a copy of QuizState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountryCopyWith<$Res>? get selectedAnswer {
+    if (_self.selectedAnswer == null) {
+    return null;
+  }
+
+  return $CountryCopyWith<$Res>(_self.selectedAnswer!, (value) {
+    return _then(_self.copyWith(selectedAnswer: value));
   });
 }
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/database/app_database.dart';
+import '../../domain/models/country.dart';
 import '../../domain/models/quiz_state.dart';
 import '../../domain/repositories/country_repository.dart';
 

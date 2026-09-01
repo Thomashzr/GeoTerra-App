@@ -23,7 +23,10 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: homeRoutePath,
-      builder: (context, state) => const HomeScreen(),
+      builder: (context, state) => HomeScreen(
+        onPlay: () => context.go(quizRoutePath),
+        onSettings: () => context.go(settingsRoutePath),
+      ),
     ),
     GoRoute(
       path: quizRoutePath,

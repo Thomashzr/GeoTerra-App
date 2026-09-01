@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 /// Entry point for the game. It deliberately owns only presentation concerns;
 /// navigation can be overridden by the app router or by tests.
@@ -42,7 +41,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final play = onPlay ?? () => context.go('/quiz');
+    final play = onPlay ?? () {};
     final settings = onSettings ?? () => _showSettings(context);
 
     return Scaffold(
@@ -156,7 +155,7 @@ class SettingsPlaceholderScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               FilledButton(
-                onPressed: () => context.pop(),
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Volver'),
               ),
             ],

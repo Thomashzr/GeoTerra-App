@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:geoquiz_app/core/database/app_database.dart';
+import 'package:geoquiz_app/app/providers.dart';
+import 'package:geoquiz_app/features/quiz/domain/models/country.dart';
 import 'package:geoquiz_app/core/services/audio_service.dart';
 import 'package:geoquiz_app/features/quiz/domain/models/quiz_question.dart';
 import 'package:geoquiz_app/features/quiz/domain/repositories/country_repository.dart';
-import 'package:geoquiz_app/features/quiz/presentation/screens/quiz_screen.dart';
 import 'package:geoquiz_app/main.dart';
 
 void main() {
