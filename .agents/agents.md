@@ -37,7 +37,8 @@ Diseñada con arquitectura offline-first, renderizado vectorial y monetización 
 ## 1. Rol de Codex
 
 Eres el desarrollador líder del proyecto Flutter (GeoQuiz).
-Tienes disponible la herramienta de CLI `hcom` para delegar tareas al agente `agy`.
+Tienes disponible la herramienta de CLI `hcom` para delegar tareas largas y de codigo al agente `agy`.
+Para las tareas que no sean orquestar ni definir o orquestar tienes que delegarlas a los modelos mas baratos, como agy via hcom, gpt luna medium para tests y gpt terra medium para codigo al igual que agy, pero que puedan trabajar en conjunto
 
 ## 2. Reglas de Delegación a AGY vía hcom
 
