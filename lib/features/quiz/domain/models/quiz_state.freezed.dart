@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QuizState {
 
- QuizQuestion? get currentQuestion; int get currentQuestionIndex; int get lives; int get score; int get streak; bool get isGameOver; int get remainingSeconds; bool get isAnswered; Country? get selectedAnswer;
+ QuizQuestion? get currentQuestion; int get currentQuestionIndex; int get lives; int get score; int get streak; bool get isGameOver; bool get isAnswered; Country? get selectedAnswer;
 /// Create a copy of QuizState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $QuizStateCopyWith<QuizState> get copyWith => _$QuizStateCopyWithImpl<QuizState>
 @override
 bool operator ==(Object other) {
   final _this = this as QuizState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizState&&(identical(other.currentQuestion, _this.currentQuestion) || other.currentQuestion == _this.currentQuestion)&&(identical(other.currentQuestionIndex, _this.currentQuestionIndex) || other.currentQuestionIndex == _this.currentQuestionIndex)&&(identical(other.lives, _this.lives) || other.lives == _this.lives)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver)&&(identical(other.remainingSeconds, _this.remainingSeconds) || other.remainingSeconds == _this.remainingSeconds)&&(identical(other.isAnswered, _this.isAnswered) || other.isAnswered == _this.isAnswered)&&(identical(other.selectedAnswer, _this.selectedAnswer) || other.selectedAnswer == _this.selectedAnswer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizState&&(identical(other.currentQuestion, _this.currentQuestion) || other.currentQuestion == _this.currentQuestion)&&(identical(other.currentQuestionIndex, _this.currentQuestionIndex) || other.currentQuestionIndex == _this.currentQuestionIndex)&&(identical(other.lives, _this.lives) || other.lives == _this.lives)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver)&&(identical(other.isAnswered, _this.isAnswered) || other.isAnswered == _this.isAnswered)&&(identical(other.selectedAnswer, _this.selectedAnswer) || other.selectedAnswer == _this.selectedAnswer));
 }
 
 
 @override
 int get hashCode {
   final _this = this as QuizState;
-  return Object.hash(runtimeType,_this.currentQuestion,_this.currentQuestionIndex,_this.lives,_this.score,_this.streak,_this.isGameOver,_this.remainingSeconds,_this.isAnswered,_this.selectedAnswer);
+  return Object.hash(runtimeType,_this.currentQuestion,_this.currentQuestionIndex,_this.lives,_this.score,_this.streak,_this.isGameOver,_this.isAnswered,_this.selectedAnswer);
 }
 
 @override
 String toString() {
   final _this = this as QuizState;
-  return 'QuizState(currentQuestion: ${_this.currentQuestion}, currentQuestionIndex: ${_this.currentQuestionIndex}, lives: ${_this.lives}, score: ${_this.score}, streak: ${_this.streak}, isGameOver: ${_this.isGameOver}, remainingSeconds: ${_this.remainingSeconds}, isAnswered: ${_this.isAnswered}, selectedAnswer: ${_this.selectedAnswer})';
+  return 'QuizState(currentQuestion: ${_this.currentQuestion}, currentQuestionIndex: ${_this.currentQuestionIndex}, lives: ${_this.lives}, score: ${_this.score}, streak: ${_this.streak}, isGameOver: ${_this.isGameOver}, isAnswered: ${_this.isAnswered}, selectedAnswer: ${_this.selectedAnswer})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $QuizStateCopyWith<$Res>  {
   factory $QuizStateCopyWith(QuizState value, $Res Function(QuizState) _then) = _$QuizStateCopyWithImpl;
 @useResult
 $Res call({
- QuizQuestion? currentQuestion, int currentQuestionIndex, int lives, int score, int streak, bool isGameOver, int remainingSeconds, bool isAnswered, Country? selectedAnswer
+ QuizQuestion? currentQuestion, int currentQuestionIndex, int lives, int score, int streak, bool isGameOver, bool isAnswered, Country? selectedAnswer
 });
 
 
@@ -68,7 +68,7 @@ class _$QuizStateCopyWithImpl<$Res>
 
 /// Create a copy of QuizState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currentQuestion = freezed,Object? currentQuestionIndex = null,Object? lives = null,Object? score = null,Object? streak = null,Object? isGameOver = null,Object? remainingSeconds = null,Object? isAnswered = null,Object? selectedAnswer = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentQuestion = freezed,Object? currentQuestionIndex = null,Object? lives = null,Object? score = null,Object? streak = null,Object? isGameOver = null,Object? isAnswered = null,Object? selectedAnswer = freezed,}) {
   return _then(QuizState(
 currentQuestion: freezed == currentQuestion ? _self.currentQuestion : currentQuestion // ignore: cast_nullable_to_non_nullable
 as QuizQuestion?,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
@@ -76,8 +76,7 @@ as int,lives: null == lives ? _self.lives : lives // ignore: cast_nullable_to_no
 as int,score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as int,streak: null == streak ? _self.streak : streak // ignore: cast_nullable_to_non_nullable
 as int,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
-as bool,remainingSeconds: null == remainingSeconds ? _self.remainingSeconds : remainingSeconds // ignore: cast_nullable_to_non_nullable
-as int,isAnswered: null == isAnswered ? _self.isAnswered : isAnswered // ignore: cast_nullable_to_non_nullable
+as bool,isAnswered: null == isAnswered ? _self.isAnswered : isAnswered // ignore: cast_nullable_to_non_nullable
 as bool,selectedAnswer: freezed == selectedAnswer ? _self.selectedAnswer : selectedAnswer // ignore: cast_nullable_to_non_nullable
 as Country?,
   ));
@@ -188,10 +187,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( QuizQuestion? currentQuestion,  int currentQuestionIndex,  int lives,  int score,  int streak,  bool isGameOver,  int remainingSeconds,  bool isAnswered,  Country? selectedAnswer)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( QuizQuestion? currentQuestion,  int currentQuestionIndex,  int lives,  int score,  int streak,  bool isGameOver,  bool isAnswered,  Country? selectedAnswer)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QuizState() when $default != null:
-return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_that.score,_that.streak,_that.isGameOver,_that.remainingSeconds,_that.isAnswered,_that.selectedAnswer);case _:
+return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_that.score,_that.streak,_that.isGameOver,_that.isAnswered,_that.selectedAnswer);case _:
   return orElse();
 
 }
@@ -209,10 +208,10 @@ return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( QuizQuestion? currentQuestion,  int currentQuestionIndex,  int lives,  int score,  int streak,  bool isGameOver,  int remainingSeconds,  bool isAnswered,  Country? selectedAnswer)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( QuizQuestion? currentQuestion,  int currentQuestionIndex,  int lives,  int score,  int streak,  bool isGameOver,  bool isAnswered,  Country? selectedAnswer)  $default,) {final _that = this;
 switch (_that) {
 case _QuizState():
-return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_that.score,_that.streak,_that.isGameOver,_that.remainingSeconds,_that.isAnswered,_that.selectedAnswer);case _:
+return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_that.score,_that.streak,_that.isGameOver,_that.isAnswered,_that.selectedAnswer);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -229,10 +228,10 @@ return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( QuizQuestion? currentQuestion,  int currentQuestionIndex,  int lives,  int score,  int streak,  bool isGameOver,  int remainingSeconds,  bool isAnswered,  Country? selectedAnswer)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( QuizQuestion? currentQuestion,  int currentQuestionIndex,  int lives,  int score,  int streak,  bool isGameOver,  bool isAnswered,  Country? selectedAnswer)?  $default,) {final _that = this;
 switch (_that) {
 case _QuizState() when $default != null:
-return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_that.score,_that.streak,_that.isGameOver,_that.remainingSeconds,_that.isAnswered,_that.selectedAnswer);case _:
+return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_that.score,_that.streak,_that.isGameOver,_that.isAnswered,_that.selectedAnswer);case _:
   return null;
 
 }
@@ -244,7 +243,7 @@ return $default(_that.currentQuestion,_that.currentQuestionIndex,_that.lives,_th
 
 
 class _QuizState implements QuizState {
-  const _QuizState({this.currentQuestion, this.currentQuestionIndex = 0, this.lives = 3, this.score = 0, this.streak = 0, this.isGameOver = false, this.remainingSeconds = 15, this.isAnswered = false, this.selectedAnswer});
+  const _QuizState({this.currentQuestion, this.currentQuestionIndex = 0, this.lives = 3, this.score = 0, this.streak = 0, this.isGameOver = false, this.isAnswered = false, this.selectedAnswer});
 
 
 @override final  QuizQuestion? currentQuestion;
@@ -253,7 +252,6 @@ class _QuizState implements QuizState {
 @override@JsonKey() final  int score;
 @override@JsonKey() final  int streak;
 @override@JsonKey() final  bool isGameOver;
-@override@JsonKey() final  int remainingSeconds;
 @override@JsonKey() final  bool isAnswered;
 @override final  Country? selectedAnswer;
 
@@ -267,18 +265,18 @@ _$QuizStateCopyWith<_QuizState> get copyWith => __$QuizStateCopyWithImpl<_QuizSt
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizState&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.lives, lives) || other.lives == lives)&&(identical(other.score, score) || other.score == score)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver)&&(identical(other.remainingSeconds, remainingSeconds) || other.remainingSeconds == remainingSeconds)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered)&&(identical(other.selectedAnswer, selectedAnswer) || other.selectedAnswer == selectedAnswer));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizState&&(identical(other.currentQuestion, currentQuestion) || other.currentQuestion == currentQuestion)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.lives, lives) || other.lives == lives)&&(identical(other.score, score) || other.score == score)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver)&&(identical(other.isAnswered, isAnswered) || other.isAnswered == isAnswered)&&(identical(other.selectedAnswer, selectedAnswer) || other.selectedAnswer == selectedAnswer));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,currentQuestion,currentQuestionIndex,lives,score,streak,isGameOver,remainingSeconds,isAnswered,selectedAnswer);
+    return Object.hash(runtimeType,currentQuestion,currentQuestionIndex,lives,score,streak,isGameOver,isAnswered,selectedAnswer);
 }
 
 @override
 String toString() {
-    return 'QuizState(currentQuestion: $currentQuestion, currentQuestionIndex: $currentQuestionIndex, lives: $lives, score: $score, streak: $streak, isGameOver: $isGameOver, remainingSeconds: $remainingSeconds, isAnswered: $isAnswered, selectedAnswer: $selectedAnswer)';
+    return 'QuizState(currentQuestion: $currentQuestion, currentQuestionIndex: $currentQuestionIndex, lives: $lives, score: $score, streak: $streak, isGameOver: $isGameOver, isAnswered: $isAnswered, selectedAnswer: $selectedAnswer)';
 }
 
 
@@ -289,7 +287,7 @@ abstract mixin class _$QuizStateCopyWith<$Res> implements $QuizStateCopyWith<$Re
   factory _$QuizStateCopyWith(_QuizState value, $Res Function(_QuizState) _then) = __$QuizStateCopyWithImpl;
 @override @useResult
 $Res call({
- QuizQuestion? currentQuestion, int currentQuestionIndex, int lives, int score, int streak, bool isGameOver, int remainingSeconds, bool isAnswered, Country? selectedAnswer
+ QuizQuestion? currentQuestion, int currentQuestionIndex, int lives, int score, int streak, bool isGameOver, bool isAnswered, Country? selectedAnswer
 });
 
 
@@ -306,7 +304,7 @@ class __$QuizStateCopyWithImpl<$Res>
 
 /// Create a copy of QuizState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currentQuestion = freezed,Object? currentQuestionIndex = null,Object? lives = null,Object? score = null,Object? streak = null,Object? isGameOver = null,Object? remainingSeconds = null,Object? isAnswered = null,Object? selectedAnswer = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currentQuestion = freezed,Object? currentQuestionIndex = null,Object? lives = null,Object? score = null,Object? streak = null,Object? isGameOver = null,Object? isAnswered = null,Object? selectedAnswer = freezed,}) {
   return _then(_QuizState(
 currentQuestion: freezed == currentQuestion ? _self.currentQuestion : currentQuestion // ignore: cast_nullable_to_non_nullable
 as QuizQuestion?,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
@@ -314,8 +312,7 @@ as int,lives: null == lives ? _self.lives : lives // ignore: cast_nullable_to_no
 as int,score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as int,streak: null == streak ? _self.streak : streak // ignore: cast_nullable_to_non_nullable
 as int,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
-as bool,remainingSeconds: null == remainingSeconds ? _self.remainingSeconds : remainingSeconds // ignore: cast_nullable_to_non_nullable
-as int,isAnswered: null == isAnswered ? _self.isAnswered : isAnswered // ignore: cast_nullable_to_non_nullable
+as bool,isAnswered: null == isAnswered ? _self.isAnswered : isAnswered // ignore: cast_nullable_to_non_nullable
 as bool,selectedAnswer: freezed == selectedAnswer ? _self.selectedAnswer : selectedAnswer // ignore: cast_nullable_to_non_nullable
 as Country?,
   ));

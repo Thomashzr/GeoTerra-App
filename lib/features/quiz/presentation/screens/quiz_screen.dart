@@ -40,12 +40,6 @@ class QuizScreen extends ConsumerWidget {
         } else {
           unawaited(audioService.playError());
         }
-      } else if (!next.isAnswered &&
-          previous != null &&
-          next.remainingSeconds != previous.remainingSeconds &&
-          next.remainingSeconds > 0 &&
-          next.remainingSeconds <= 5) {
-        unawaited(audioService.playTick());
       }
 
       if (next.isGameOver && previous?.isGameOver != true) {
@@ -82,12 +76,7 @@ class QuizScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 48),
             children: [
-              QuizTopBar(
-                lives: state.lives,
-                score: state.score,
-                remainingSeconds: state.remainingSeconds,
-                totalSeconds: question.timeLimitSeconds,
-              ),
+              QuizTopBar(lives: state.lives, score: state.score),
               const SizedBox(height: 30),
               Text(
                 'PUNTO DE CONTROL ${state.currentQuestionIndex + 1}',
@@ -141,7 +130,7 @@ class QuizScreen extends ConsumerWidget {
                   );
                 },
               ),
-              if (state.isAnswered && !state.isGameOver) ...[
+              if (_shouldShowNextButton(state) && !state.isGameOver) ...[
                 const SizedBox(height: 20),
                 FilledButton.icon(
                   onPressed: () => unawaited(
@@ -156,6 +145,15 @@ class QuizScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _shouldShowNextButton(QuizState state) {
+    final selectedAnswer = state.selectedAnswer;
+    final target = state.currentQuestion?.target;
+    return state.isAnswered &&
+        selectedAnswer != null &&
+        target != null &&
+        selectedAnswer.id != target.id;
   }
 
   Future<void> _showGameOverFlow({

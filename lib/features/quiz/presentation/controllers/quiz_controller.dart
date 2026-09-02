@@ -12,28 +12,22 @@ class QuizControllerConfig {
   const QuizControllerConfig({
     required this.countryRepository,
     required this.difficulty,
-    this.tickInterval = const Duration(seconds: 1),
   });
 
   final CountryRepository countryRepository;
   final int difficulty;
-  final Duration tickInterval;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is QuizControllerConfig &&
             identical(countryRepository, other.countryRepository) &&
-            difficulty == other.difficulty &&
-            tickInterval == other.tickInterval;
+            difficulty == other.difficulty;
   }
 
   @override
-  int get hashCode => Object.hash(
-    identityHashCode(countryRepository),
-    difficulty,
-    tickInterval,
-  );
+  int get hashCode =>
+      Object.hash(identityHashCode(countryRepository), difficulty);
 }
 
 final quizControllerProvider = StateNotifierProvider.autoDispose
@@ -41,36 +35,36 @@ final quizControllerProvider = StateNotifierProvider.autoDispose
       final notifier = QuizNotifier(
         countryRepository: config.countryRepository,
         difficulty: config.difficulty,
-        tickInterval: config.tickInterval,
       );
       unawaited(notifier.nextQuestion());
       return notifier;
     });
 
 class QuizNotifier extends StateNotifier<QuizState> {
+  static const _correctAnswerFeedbackDelay = Duration(seconds: 1);
+
   QuizNotifier({
     required CountryRepository countryRepository,
     required int difficulty,
-    Duration tickInterval = const Duration(seconds: 1),
-  }) : this._(countryRepository, difficulty, tickInterval);
+  }) : this._(countryRepository, difficulty);
 
-  QuizNotifier._(this._countryRepository, this._difficulty, this._tickInterval)
+  QuizNotifier._(this._countryRepository, this._difficulty)
     : super(const QuizState());
 
   final CountryRepository _countryRepository;
   final int _difficulty;
-  final Duration _tickInterval;
 
-  Timer? _timer;
+  Timer? _autoAdvanceTimer;
   bool _isLoading = false;
+  bool _isDisposed = false;
   int _questionRequestId = 0;
 
   Future<void> nextQuestion() async {
-    if (state.isGameOver || _isLoading) {
+    if (_isDisposed || state.isGameOver || _isLoading) {
       return;
     }
 
-    _cancelTimer();
+    _cancelAutoAdvance();
     _isLoading = true;
     final requestId = ++_questionRequestId;
     final hadQuestion = state.currentQuestion != null;
@@ -80,7 +74,7 @@ class QuizNotifier extends StateNotifier<QuizState> {
         difficulty: _difficulty,
       );
 
-      if (requestId != _questionRequestId) {
+      if (_isDisposed || requestId != _questionRequestId) {
         return;
       }
 
@@ -89,13 +83,11 @@ class QuizNotifier extends StateNotifier<QuizState> {
         currentQuestionIndex: hadQuestion
             ? state.currentQuestionIndex + 1
             : state.currentQuestionIndex,
-        remainingSeconds: question.timeLimitSeconds,
         isAnswered: false,
         selectedAnswer: null,
       );
-      _startTimer();
     } finally {
-      if (requestId == _questionRequestId) {
+      if (!_isDisposed && requestId == _questionRequestId) {
         _isLoading = false;
       }
     }
@@ -103,19 +95,19 @@ class QuizNotifier extends StateNotifier<QuizState> {
 
   void submitAnswer(Country selected) {
     final question = state.currentQuestion;
-    if (question == null ||
+    if (_isDisposed ||
+        question == null ||
         state.isAnswered ||
         state.isGameOver ||
-        _isLoading) {
+        _isLoading ||
+        _autoAdvanceTimer != null) {
       return;
     }
-
-    _cancelTimer();
 
     if (selected.id == question.target.id) {
       final newStreak = state.streak + 1;
       final multiplier = 1 + newStreak ~/ 3;
-      final earnedPoints = state.remainingSeconds * 10 * multiplier;
+      final earnedPoints = 150 * multiplier;
 
       state = state.copyWith(
         score: state.score + earnedPoints,
@@ -123,6 +115,7 @@ class QuizNotifier extends StateNotifier<QuizState> {
         isAnswered: true,
         selectedAnswer: selected,
       );
+      _scheduleAutoAdvance();
       return;
     }
 
@@ -130,57 +123,49 @@ class QuizNotifier extends StateNotifier<QuizState> {
   }
 
   void reviveWithOneLife() {
-    if (!state.isGameOver) {
+    if (_isDisposed || !state.isGameOver) {
       return;
     }
 
     state = state.copyWith(lives: 1, isGameOver: false, isAnswered: true);
   }
 
-  void _startTimer() {
-    _timer = Timer.periodic(_tickInterval, _onTick);
-  }
-
-  void _onTick(Timer timer) {
-    if (state.isAnswered || state.isGameOver) {
-      _cancelTimer();
+  void _scheduleAutoAdvance() {
+    if (_isDisposed || _isLoading) {
       return;
     }
 
-    final remainingSeconds = state.remainingSeconds - 1;
-    if (remainingSeconds <= 0) {
-      _cancelTimer();
-      _registerIncorrectAnswer(selectedAnswer: null, remainingSeconds: 0);
-      return;
-    }
-
-    state = state.copyWith(remainingSeconds: remainingSeconds);
+    _cancelAutoAdvance();
+    _autoAdvanceTimer = Timer(_correctAnswerFeedbackDelay, () {
+      _autoAdvanceTimer = null;
+      if (_isDisposed || state.isGameOver || !state.isAnswered) {
+        return;
+      }
+      unawaited(nextQuestion());
+    });
   }
 
-  void _registerIncorrectAnswer({
-    required Country? selectedAnswer,
-    int? remainingSeconds,
-  }) {
+  void _registerIncorrectAnswer({required Country? selectedAnswer}) {
     final remainingLives = state.lives > 0 ? state.lives - 1 : 0;
     state = state.copyWith(
       lives: remainingLives,
       streak: 0,
       isGameOver: remainingLives == 0,
-      remainingSeconds: remainingSeconds ?? state.remainingSeconds,
       isAnswered: true,
       selectedAnswer: selectedAnswer,
     );
   }
 
-  void _cancelTimer() {
-    _timer?.cancel();
-    _timer = null;
+  void _cancelAutoAdvance() {
+    _autoAdvanceTimer?.cancel();
+    _autoAdvanceTimer = null;
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
     _questionRequestId++;
-    _cancelTimer();
+    _cancelAutoAdvance();
     super.dispose();
   }
 }

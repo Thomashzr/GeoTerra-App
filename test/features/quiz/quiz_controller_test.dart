@@ -9,58 +9,88 @@ import 'package:geoquiz_app/features/quiz/presentation/controllers/quiz_controll
 
 void main() {
   group('QuizNotifier', () {
-    test('timeout consumes one life and answers without a selection', () {
+    test('waiting does not penalize the answer or reduce its score', () {
       fakeAsync((async) {
         final notifier = _createNotifier();
         _loadNextQuestion(notifier, async);
-
-        async.elapse(const Duration(seconds: 15));
-
-        expect(notifier.state.lives, 2);
-        expect(notifier.state.remainingSeconds, 0);
+        async.elapse(const Duration(minutes: 2));
+        notifier.submitAnswer(notifier.state.currentQuestion!.target);
+        expect(notifier.state.lives, 3);
+        expect(notifier.state.score, 150);
+        expect(notifier.state.streak, 1);
         expect(notifier.state.isAnswered, isTrue);
-        expect(notifier.state.selectedAnswer, isNull);
-        expect(notifier.state.isGameOver, isFalse);
         notifier.dispose();
       });
     });
 
-    test('third consecutive correct answer scores with a x2 multiplier', () {
+    test('correct answers score 150 times the streak multiplier', () {
       fakeAsync((async) {
         final notifier = _createNotifier();
         _loadNextQuestion(notifier, async);
-
         notifier.submitAnswer(notifier.state.currentQuestion!.target);
         expect(notifier.state.score, 150);
-        expect(notifier.state.streak, 1);
-
-        _loadNextQuestion(notifier, async);
+        _advanceAfterCorrectAnswer(notifier, async);
         notifier.submitAnswer(notifier.state.currentQuestion!.target);
         expect(notifier.state.score, 300);
-        expect(notifier.state.streak, 2);
-
-        _loadNextQuestion(notifier, async);
-        final scoreBeforeThirdAnswer = notifier.state.score;
+        _advanceAfterCorrectAnswer(notifier, async);
         notifier.submitAnswer(notifier.state.currentQuestion!.target);
-
-        // 15 remaining seconds * 10 base points * x2 at streak 3.
-        expect(notifier.state.score - scoreBeforeThirdAnswer, 300);
         expect(notifier.state.score, 600);
         expect(notifier.state.streak, 3);
         notifier.dispose();
       });
     });
 
-    test('third incorrect answer exhausts lives and ends the game', () {
+    test('a correct answer auto-advances exactly once after feedback', () {
+      fakeAsync((async) {
+        final repository = _FakeCountryRepository([
+          _questionFor(_argentina),
+          _questionFor(_brazil),
+        ]);
+        final notifier = _createNotifier(repository: repository);
+        _loadNextQuestion(notifier, async);
+        notifier.submitAnswer(notifier.state.currentQuestion!.target);
+        expect(notifier.state.isAnswered, isTrue);
+        expect(notifier.state.currentQuestionIndex, 0);
+        expect(repository.requestCount, 1);
+        async.elapse(const Duration(seconds: 1));
+        async.flushMicrotasks();
+        expect(notifier.state.currentQuestionIndex, 1);
+        expect(notifier.state.isAnswered, isFalse);
+        expect(repository.requestCount, 2);
+        async.elapse(const Duration(seconds: 1));
+        async.flushMicrotasks();
+        expect(repository.requestCount, 2);
+        notifier.dispose();
+      });
+    });
+
+    test('an incorrect answer does not auto-advance and costs one life', () {
+      fakeAsync((async) {
+        final repository = _FakeCountryRepository([
+          _questionFor(_argentina),
+          _questionFor(_brazil),
+        ]);
+        final notifier = _createNotifier(repository: repository);
+        _loadNextQuestion(notifier, async);
+        notifier.submitAnswer(_wrongAnswer);
+        async.elapse(const Duration(seconds: 1));
+        async.flushMicrotasks();
+        expect(notifier.state.currentQuestionIndex, 0);
+        expect(notifier.state.isAnswered, isTrue);
+        expect(notifier.state.lives, 2);
+        expect(repository.requestCount, 1);
+        notifier.dispose();
+      });
+    });
+
+    test('the third incorrect answer ends the game', () {
       fakeAsync((async) {
         final notifier = _createNotifier();
-
         for (var answerNumber = 1; answerNumber <= 3; answerNumber++) {
           _loadNextQuestion(notifier, async);
           notifier.submitAnswer(_wrongAnswer);
           expect(notifier.state.lives, 3 - answerNumber);
         }
-
         expect(notifier.state.lives, 0);
         expect(notifier.state.isGameOver, isTrue);
         expect(notifier.state.isAnswered, isTrue);
@@ -68,120 +98,99 @@ void main() {
       });
     });
 
-    test('next question resets answer flags and restarts the countdown', () {
+    test('revive restores one life without changing score or feedback', () {
       fakeAsync((async) {
         final notifier = _createNotifier();
         _loadNextQuestion(notifier, async);
-        notifier.submitAnswer(_wrongAnswer);
-
-        expect(notifier.state.currentQuestionIndex, 0);
+        for (var answerNumber = 0; answerNumber < 3; answerNumber++) {
+          notifier.submitAnswer(_wrongAnswer);
+          if (answerNumber < 2) _loadNextQuestion(notifier, async);
+        }
+        expect(notifier.state.isGameOver, isTrue);
+        notifier.reviveWithOneLife();
+        expect(notifier.state.lives, 1);
+        expect(notifier.state.isGameOver, isFalse);
         expect(notifier.state.isAnswered, isTrue);
-        expect(notifier.state.selectedAnswer, _wrongAnswer);
-
+        expect(notifier.state.score, 0);
         _loadNextQuestion(notifier, async);
-
-        expect(notifier.state.currentQuestionIndex, 1);
-        expect(notifier.state.remainingSeconds, 15);
         expect(notifier.state.isAnswered, isFalse);
-        expect(notifier.state.selectedAnswer, isNull);
-
-        async.elapse(const Duration(seconds: 1));
-        expect(notifier.state.remainingSeconds, 14);
         notifier.dispose();
       });
     });
 
-    test('submitting the same correct answer twice only scores once', () {
+    test('revive is ignored while the game is active', () {
       fakeAsync((async) {
         final notifier = _createNotifier();
         _loadNextQuestion(notifier, async);
-        final answer = notifier.state.currentQuestion!.target;
+        notifier.reviveWithOneLife();
+        expect(notifier.state.lives, 3);
+        expect(notifier.state.isGameOver, isFalse);
+        expect(notifier.state.isAnswered, isFalse);
+        notifier.dispose();
+      });
+    });
 
+    test('double submit of a correct answer scores and advances once', () {
+      fakeAsync((async) {
+        final repository = _FakeCountryRepository([
+          _questionFor(_argentina),
+          _questionFor(_brazil),
+        ]);
+        final notifier = _createNotifier(repository: repository);
+        _loadNextQuestion(notifier, async);
+        final answer = notifier.state.currentQuestion!.target;
         notifier
           ..submitAnswer(answer)
           ..submitAnswer(answer);
-
+        async.elapse(const Duration(seconds: 1));
+        async.flushMicrotasks();
         expect(notifier.state.score, 150);
         expect(notifier.state.streak, 1);
         expect(notifier.state.lives, 3);
+        expect(repository.requestCount, 2);
         notifier.dispose();
       });
     });
 
-    test('submitting the same incorrect answer twice only costs one life', () {
+    test('double submit of an incorrect answer costs one life', () {
       fakeAsync((async) {
         final notifier = _createNotifier();
         _loadNextQuestion(notifier, async);
-
         notifier
           ..submitAnswer(_wrongAnswer)
           ..submitAnswer(_wrongAnswer);
-
         expect(notifier.state.lives, 2);
         expect(notifier.state.score, 0);
         expect(notifier.state.streak, 0);
         notifier.dispose();
       });
     });
-
-    test('rewarded revive restores one life without changing the score', () {
-      fakeAsync((async) {
-        final notifier = _createNotifier();
-        _loadNextQuestion(notifier, async);
-        notifier.submitAnswer(notifier.state.currentQuestion!.target);
-
-        for (var answerNumber = 0; answerNumber < 3; answerNumber++) {
-          _loadNextQuestion(notifier, async);
-          notifier.submitAnswer(_wrongAnswer);
-        }
-
-        expect(notifier.state.score, 150);
-        expect(notifier.state.isGameOver, isTrue);
-
-        notifier.reviveWithOneLife();
-
-        expect(notifier.state.lives, 1);
-        expect(notifier.state.isGameOver, isFalse);
-        expect(notifier.state.isAnswered, isTrue);
-        expect(notifier.state.score, 150);
-
-        _loadNextQuestion(notifier, async);
-        expect(notifier.state.isAnswered, isFalse);
-        expect(notifier.state.remainingSeconds, 15);
-        notifier.dispose();
-      });
-    });
-
-    test('revive is ignored while the game is still active', () {
-      fakeAsync((async) {
-        final notifier = _createNotifier();
-        _loadNextQuestion(notifier, async);
-
-        notifier.reviveWithOneLife();
-
-        expect(notifier.state.lives, 3);
-        expect(notifier.state.isGameOver, isFalse);
-        expect(notifier.state.isAnswered, isFalse);
-        notifier.dispose();
-      });
-    });
   });
 }
 
-QuizNotifier _createNotifier() => QuizNotifier(
-  countryRepository: _FakeCountryRepository([
-    _questionFor(_argentina),
-    _questionFor(_brazil),
-    _questionFor(_chile),
-    _questionFor(_argentina),
-  ]),
-  difficulty: 1,
-);
+QuizNotifier _createNotifier({_FakeCountryRepository? repository}) =>
+    QuizNotifier(
+      countryRepository:
+          repository ??
+          _FakeCountryRepository([
+            _questionFor(_argentina),
+            _questionFor(_brazil),
+            _questionFor(_chile),
+            _questionFor(_argentina),
+          ]),
+      difficulty: 1,
+    );
 
 void _loadNextQuestion(QuizNotifier notifier, FakeAsync async) {
   unawaited(notifier.nextQuestion());
   async.flushMicrotasks();
   expect(notifier.state.currentQuestion, isNotNull);
+}
+
+void _advanceAfterCorrectAnswer(QuizNotifier notifier, FakeAsync async) {
+  async.elapse(const Duration(seconds: 1));
+  async.flushMicrotasks();
+  expect(notifier.state.isAnswered, isFalse);
 }
 
 QuizQuestion _questionFor(Country target) => QuizQuestion(
@@ -194,6 +203,8 @@ class _FakeCountryRepository implements CountryRepository {
 
   final List<QuizQuestion> _questions;
   int _nextQuestionIndex = 0;
+
+  int get requestCount => _nextQuestionIndex;
 
   @override
   Future<QuizQuestion> getNextQuestion({required int difficulty}) async {

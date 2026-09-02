@@ -2,25 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class QuizTopBar extends StatelessWidget {
-  const QuizTopBar({
-    required this.lives,
-    required this.score,
-    required this.remainingSeconds,
-    required this.totalSeconds,
-    super.key,
-  });
+  const QuizTopBar({required this.lives, required this.score, super.key});
   final int lives;
   final int score;
-  final int remainingSeconds;
-  final int totalSeconds;
 
   @override
   Widget build(BuildContext context) {
     final safeLives = lives.clamp(0, 99);
-    final safeTotal = totalSeconds > 0 ? totalSeconds : 1;
-    final safeRemaining = remainingSeconds.clamp(0, safeTotal);
-    final progress = safeRemaining / safeTotal;
-    final progressColor = _progressColor(progress);
     final colors = Theme.of(context).colorScheme;
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
     return DecoratedBox(
@@ -59,13 +47,6 @@ class QuizTopBar extends StatelessWidget {
                       label: 'Puntuación: $score puntos',
                       color: colors.tertiary,
                     ),
-                    const SizedBox(width: 14),
-                    _Metric(
-                      icon: Icons.timer_outlined,
-                      value: '${safeRemaining}s',
-                      label: '$safeRemaining segundos restantes',
-                      color: progressColor,
-                    ),
                   ],
                 );
 
@@ -88,22 +69,6 @@ class QuizTopBar extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 12),
-            Semantics(
-              label: 'Tiempo restante',
-              value: '${(progress * 100).round()} por ciento',
-              child: ExcludeSemantics(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(99),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 8,
-                    color: progressColor,
-                    backgroundColor: colors.surfaceContainerHighest,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -122,12 +87,6 @@ class QuizTopBar extends StatelessWidget {
           delay: (index * 45).ms,
           curve: Curves.easeOutBack,
         );
-  }
-
-  Color _progressColor(double progress) {
-    if (progress > .5) return const Color(0xFF217348);
-    if (progress > .25) return const Color(0xFFD58B00);
-    return const Color(0xFFB83232);
   }
 }
 

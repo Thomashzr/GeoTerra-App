@@ -14,7 +14,6 @@ abstract class QuizState with _$QuizState {
     @Default(0) int score,
     @Default(0) int streak,
     @Default(false) bool isGameOver,
-    @Default(15) int remainingSeconds,
     @Default(false) bool isAnswered,
     Country? selectedAnswer,
   }) = _QuizState;
